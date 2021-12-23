@@ -1,0 +1,28 @@
+{
+	"word": "masa",
+	"word_en": "table",
+	"type": "noun",
+	"singular": ["masa"],
+	"plural": ["mese"],
+	"definitions": [
+		{
+			"dict": "Micul dicționar academic, ediția a II-a
+            Academia Română, Institutul de Lingvistică",
+			"dictType": "definitions",
+			"year": 2010,
+			"text": ["Îngrămădire de elemente de aceeași natură ori diferite, care alcătuiesc împreună un singur corp"]
+		},
+		{
+			"dict": "Dicționarul explicativ al limbii române (ediția a II-a revăzută și adăugită)",
+			"dictType": "definitions",
+			"year": 2009,
+			"text": [" Mulțime compactă de oameni, considerată ca o unitate; grupare mare de oameni cu anumite caractere comune; cercuri largi ale populației"]
+		},
+		{
+			"dict": "Dicționar universal al limbei române, ediția a VI-a)",
+			"dictType": "definitions",
+			"year": 1929,
+			"text": ["multime", "bloc", "continent"]
+		}
+	]
+}

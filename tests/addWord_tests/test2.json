@@ -1,0 +1,28 @@
+{
+	"word": "casa",
+	"word_en": "house",
+	"type": "noun",
+	"singular": ["casa"],
+	"plural": ["case"],
+	"definitions": [
+		{
+			"dict": "Micul dicționar academic, ediția a II-a
+            Academia Română, Institutul de Lingvistică",
+			"dictType": "definitions",
+			"year": 2010,
+			"text": ["Construcție servind ca locuință pentru oamen"]
+		},
+		{
+			"dict": "Dicționarul explicativ al limbii române (ediția a II-a revăzută și adăugită)",
+			"dictType": "definitions",
+			"year": 2009,
+			"text": ["Clădire care servește drept locuință"]
+		},
+		{
+			"dict": "Dicționar universal al limbei române, ediția a VI-a)",
+			"dictType": "definitions",
+			"year": 1929,
+			"text": ["cladire", "constructie", "imobil"]
+		}
+	]
+}
