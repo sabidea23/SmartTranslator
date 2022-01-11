@@ -1,8 +1,5 @@
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import pojo.Definition;
-import pojo.Dictionar;
-import pojo.Word;
 import java.io.File;
 import java.io.Reader;
 import java.nio.file.Files;
@@ -43,14 +40,14 @@ public class Administration {
      * The method returns a structure containing a hashmmap in which each entry is
      * represented by a dictionary (value) and its language (key).
      */
-    public static Database readAllFiles(File folder) throws Exception {
-        HashMap<String, Dictionar> dictionaryMap = new HashMap<String, Dictionar>();
+    public static Database readAllFiles(File folder) {
+        HashMap<String, Dictionar> dictionaryMap = new HashMap<> ();
 
         File[] listOfFiles = folder.listFiles();
         assert listOfFiles != null;
         for (File file : listOfFiles) {
             String language = getLanguage(file);
-            Dictionar dictionary = getDictionaryFromJson (file);
+            Dictionar dictionary = getDictionaryFromJson(file);
             dictionaryMap.put(language, dictionary);
         }
         return new Database(dictionaryMap);

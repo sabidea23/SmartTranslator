@@ -6,12 +6,6 @@
 	"plural": ["câini"],
 	"definitions": [
 		{
-			"dict": "Dicționar de sinonime",
-			"dictType": "synonyms",
-			"year": 1998,
-			"text": ["lătrător", "molie", "dulău"]
-		},
-		{
 			"dict": "Dicționarul explicativ al limbii române (ediția a II-a revăzută și adăugită)",
 			"dictType": "definitions",
 			"year": 2009,

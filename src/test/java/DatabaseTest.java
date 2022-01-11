@@ -1,9 +1,6 @@
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import pojo.Definition;
-import pojo.Dictionar;
-import pojo.Word;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -14,7 +11,7 @@ public class DatabaseTest {
     @Before
     public void init() {
         try {
-            database = Administration.readAllFiles(new File ("init"));
+            database = Administration.readAllFiles(new File("init"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -42,7 +39,7 @@ public class DatabaseTest {
             boolean result2 = database.addWord(word2, "ro");
             boolean result3 = database.addWord(word3, "ro");
 
-            Assertions.assertFalse (result1);
+            Assertions.assertTrue (result1);
             Assertions.assertTrue (result2);
             Assertions.assertTrue (result3);
         } catch (NullPointerException e) {
@@ -56,11 +53,11 @@ public class DatabaseTest {
             boolean result1 = database.removeWord("chat", "fr");
             boolean result2 = database.removeWord("manger", "ro");
 
-            Assertions.assertTrue (result1);
-            Assertions.assertFalse (result2);
+            Assertions.assertTrue(result1);
+            Assertions.assertFalse(result2);
             
         } catch (NullPointerException e) {
-            e.printStackTrace ();
+            e.printStackTrace();
         } 
     }
 
@@ -69,7 +66,7 @@ public class DatabaseTest {
         try {
             File file1 = new File("tests\\addDefinitionForWord\\test1.json");
             Definition definition1 = Administration.readDefinitionJson(file1);
-            boolean result1 =  database.addDefinitionForWord("jeu", "fr", definition1);
+            boolean result1 =  database.addDefinitionForWord("chat", "fr", definition1);
 
             File file2 = new File("tests\\addDefinitionForWord\\test2.json");
             Definition definition2 = Administration.readDefinitionJson(file2);
@@ -132,7 +129,7 @@ public class DatabaseTest {
             String sentenceTest1 = "Chats mangent";
             ArrayList<String> synonyms = new ArrayList<String>();
             synonyms.add("Mâță mesteca ");
-            synonyms.add ("Cotoroabă inghiti ") ;
+            synonyms.add("Cotoroabă inghiti ") ;
             synonyms.add("Cătușă hrani ");
             ArrayList<String> result1 = database.translateSentences(sentenceTest1, "fr", "ro");
             Assertions.assertEquals(synonyms, result1);
@@ -140,7 +137,7 @@ public class DatabaseTest {
             String sentenceTest2 = "Pisică merge";
             ArrayList<String> synonyms2 = new ArrayList<String>();
             synonyms2.add("Greffier merge ");
-            synonyms2.add ("Mistigri merge ") ;
+            synonyms2.add("Mistigri merge ") ;
             synonyms2.add("Matou merge ");
             ArrayList<String> result2 = database.translateSentences(sentenceTest2, "ro", "fr");
             Assertions.assertEquals(synonyms2, result2);
@@ -172,7 +169,6 @@ public class DatabaseTest {
             System.out.println("The dictionary does not exist");
             e.getMessage();
         }
-
     }
 
     @Test

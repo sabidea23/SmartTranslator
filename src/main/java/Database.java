@@ -1,9 +1,5 @@
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import pojo.Definition;
-import pojo.Dictionar;
-import pojo.Word;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -25,7 +21,7 @@ public class Database {
         return dictionaryHashMap;
     }
 
-    public void setDictionaryHashMap (HashMap<String, Dictionar> dictionaryHashMap) {
+    public void setDictionaryHashMap(HashMap<String, Dictionar> dictionaryHashMap) {
         this.dictionaryHashMap = dictionaryHashMap;
     }
 
@@ -37,14 +33,41 @@ public class Database {
     }
 
     /**
+     * If the new word has new definitions, they are added to the dictionary word.
+     * If the dictionary definition already exists, check if the new word has more definitions
+     * or synonyms than the one in the dictionary. If a new one is found, it is added to the
+     * list of definitions of the that dictionary.
+     */
+    public boolean checkDefinitions(Word wordFromDictionary, Word newWord) {
+        boolean wasModified = false;
+        for (int i = 0; i < newWord.getDefinitions().size(); i++) {
+            if (!wordFromDictionary.getDefinitions().contains(newWord.getDefinitions().get(i))) {
+                wordFromDictionary.getDefinitions().add(newWord.getDefinitions().get(i));
+                return true;
+            } else {  
+                for (int j = 0; j < newWord.getDefinitions().get(i).getText().size(); j++) {
+                    if (!wordFromDictionary.getDefinitions().get(i).getText().
+                            contains(newWord.getDefinitions().get(i).getText().get(i))) {
+                        wordFromDictionary.getDefinitions().get(i).getText().add(newWord.getDefinitions().get(i).
+                                getText().get(i));
+                        return true;
+                    }
+                }
+            }
+        }
+        return wasModified;
+    }
+
+    /**
      *  The method is searching in the database for the dictionary corresponding to the language
      *  received as a parameter. If the word does not already exist in the dictionary, it is added.
+     *  If the new word has new definitions, they are added to the dictionary word.
      */
-    public boolean addWord(Word word, String language) throws NullPointerException{
+    public boolean addWord(Word word, String language) throws NullPointerException {
         Dictionar dictionar = getDictionaryHashMap().get(language);
         for (Word wordCompare: dictionar.getWords()) {
             if (wordCompare.getWord().equals(word.getWord())) {
-                return false;
+                return checkDefinitions(wordCompare, word);
             }
         }
         dictionar.getWords().add(word);
@@ -67,18 +90,34 @@ public class Database {
     }
 
     /**
+     * Check for new synonyms or definitions in the new dictionary and add them to the
+     * database dictionary.
+     */
+    public boolean checkDefinitions(Definition wordFromDictionary, Definition newDefinition) {
+        boolean isModified = false;
+        for (int i = 0; i < newDefinition.getText().size(); i++) {
+            if (!wordFromDictionary.getText().contains(newDefinition.getText().get(i))) {
+                wordFromDictionary.getText().add(newDefinition.getText().get(i));
+                isModified = true;
+            }
+        }
+        return isModified;
+    }
+
+    /**
      *  The method is searching in the database for the dictionary corresponding to the language
      *  received as a parameter.
      *  If the word does not have the  definition received as parameter, it is added.
+     *  If it has new definitions or synonyms, they are added to the database.
      */
     public boolean addDefinitionForWord(String word, String language, Definition definition)
-            throws NullPointerException {
+                                        throws NullPointerException {
         Dictionar dictionar = getDictionaryHashMap().get(language);
         for (Word wordCompare: dictionar.getWords()) {
             if (wordCompare.getWord().equals(word)) {
                 for (Definition def:wordCompare.getDefinitions()) {
                     if (def.getDict().equals(definition.getDict())) {
-                        return false;
+                        return checkDefinitions(def, definition);
                     }
                 }
                 wordCompare.getDefinitions().add(definition);
@@ -94,12 +133,12 @@ public class Database {
      *  If the word does have the definition received as parameter, it is removed.
      */
     public boolean removeDefinition(String word, String language, String dictionary)
-            throws NullPointerException {
+                                    throws NullPointerException {
         Dictionar dictionar = getDictionaryHashMap().get(language);
         for (Word wordCompare: dictionar.getWords()) {
             if (wordCompare.getWord().equals(word)) {
-                for (Definition def:wordCompare.getDefinitions()) {
-                    if (def.getDict().equals (dictionary)) {
+                for (Definition def : wordCompare.getDefinitions()) {
+                    if (def.getDict().equals(dictionary)) {
                         wordCompare.getDefinitions().remove(def);
                         return true;
                     }
@@ -144,6 +183,10 @@ public class Database {
         }
     }
 
+    /**
+     * If the translation is done in English, we look up the word received as a parameter in
+     * the dictionary of the language from which it comes and return the form to the English language.
+     */
     public String translateWordToEnglish(String word, String fromLanguage) {
         Dictionar dictionary = getDictionaryHashMap().get(fromLanguage);
         for (Word wordCompare: dictionary.getWords()) {
@@ -154,21 +197,31 @@ public class Database {
         return word;
     }
 
-
     /**
-     * If the word is translated from English,  in the database for the dictionary
-     *  corresponding to the language received as a parameter.
+     * If the translation is made from English, we look in the dictionary of the language in which
+     * it is translated if we find a word with the same translation in English, and we return
+     * its infinitive form
      */
     public String translateWordFromEnglish(String word, String toLanguage) {
         Dictionar dictionary = getDictionaryHashMap().get(toLanguage);
         for (Word wordCompare: dictionary.getWords()) {
-            if (wordCompare.getWord_en ().equals(word)) {
+            if (wordCompare.getWord_en().equals(word)) {
                 return wordCompare.getWord();
             }
         }
         return word;
     }
 
+    /**
+     * Translate a word from one language to another.
+     * The causes of translation from and into English are taken into account.
+     * The method is searching in the database for the dictionary corresponding
+     * to the language from which the translation is made. Look up the word in
+     * the dictionary and the form in which it was found (singular, plural) to
+     * know how to translate it. Look up in the dictionary of the language in which the
+     * translation is made the word that has the same translation
+     * in English and return the form corresponding to the translation.
+     */
     public String translateWord(String word, String fromLanguage, String toLanguage) {
         if (fromLanguage.equals("en"))
             return translateWordFromEnglish(word, toLanguage);
@@ -179,13 +232,12 @@ public class Database {
         Dictionar dictionary = getDictionaryHashMap().get(fromLanguage);
         for (Word wordCompare: dictionary.getWords()) {
             int index = checkPluralForm(word, wordCompare);
-            if (index != INVALID_INDEX) { //s-a gasit cuvantul in dictionar si se siie si locul
+            if (index != INVALID_INDEX) {
 
                 Dictionar dictionaryToTranslate = getDictionaryHashMap().get(toLanguage);
-                for (Word wordTranslate : dictionaryToTranslate.getWords ()) {
-                    if (wordCompare.getWord_en().equals (wordTranslate.getWord_en())) {
+                for (Word wordTranslate : dictionaryToTranslate.getWords()) {
+                    if (wordCompare.getWord_en().equals(wordTranslate.getWord_en())) {
                         return checkType(wordTranslate, index);
-                        //aici trebuie returnat in fucntie de unde a fost gasit in primul dictionar
                     }
                 }
             }
@@ -193,6 +245,10 @@ public class Database {
         return word;
     }
 
+    /**
+     * Translate each word of a sentence and concatenate it to the final string.
+     * If the first word of the sentence is translated, it is formatted to begin with capital letter.
+     */
     public String translateSentence(String sentence, String fromLanguage, String toLanguage) {
         String []arrStr = sentence.split(" ");
 
@@ -213,9 +269,10 @@ public class Database {
     /**
      * Returns a list of synonyms of a word.
      */
-    public ArrayList<String> getSynonyms(String translateWord, String toLanguage) throws NullPointerException {
+    public ArrayList<String> getSynonyms(String translateWord, String toLanguage)
+                                        throws NullPointerException {
         Dictionar dictionar = getDictionaryHashMap().get(toLanguage);
-        ArrayList<String> listOfSynonyms = new ArrayList<String>();
+        ArrayList<String> listOfSynonyms = new ArrayList<>();
         for (Word word:dictionar.getWords()) {
             if (word.getWord().equals(translateWord)) {
                 for (Definition definitions : word.getDefinitions()) {
@@ -228,7 +285,12 @@ public class Database {
         return listOfSynonyms;
     }
 
-    public String getDictionaryForm(String translatedWord, String toLanguage) throws NullPointerException {
+    /**
+     * Returns the dictionary form of a word, regardless of the form in which it
+     * is given as a parameter (singular, plural).
+     */
+    public String getDictionaryForm(String translatedWord, String toLanguage)
+                                    throws NullPointerException {
         Dictionar dictionar = getDictionaryHashMap().get(toLanguage);
         for (Word word:dictionar.getWords()) {
             if (word.getWord().equals(translatedWord) || word.getPlural().contains(translatedWord) ||
@@ -239,6 +301,11 @@ public class Database {
         return translatedWord;
     }
 
+    /**
+     * Returns the maximum number of synonyms of a word. In the hashmap received as a parameter,
+     * each word is a key that has the value of a list of synonyms. If the maximum is greater
+     * than 3, return 3.
+     */
     public int getMaxSynonyms(HashMap<String, ArrayList<String>> synonyms) {
         int numberMaxSynonyms = 0;
         for (Map.Entry<String, ArrayList<String>> set : synonyms.entrySet()) {
@@ -249,6 +316,13 @@ public class Database {
         return Math.min(numberMaxSynonyms, MAX_SYNONYMS);
     }
 
+    /**
+     * Make a map in which the keys are the words in the sentence and the values are the lists of
+     * synonyms translated into the language received as a parameter. Find the maximum number of
+     * synonyms for a word. Synonymous sentences are formed and added to the list of sentences.
+     * If a word has no synonyms, the main form is used in the translated sentence. If a word has
+     * fewer synonyms, the sentences are always formed with its first synonym.
+     */
     public ArrayList<String> translateSentences(String sentence, String fromLanguage,
                                                 String toLanguage) throws NullPointerException {
         String []arrStr = sentence.split (" ");
@@ -272,7 +346,7 @@ public class Database {
                     synonym = entry.getValue().get(0);
                 else
                     synonym = synonyms.get(entry.getKey()).get(i);
-                
+
                 translatedSentence =  translatedSentence.concat(synonym + " ");
             }
             translatedSentence = translatedSentence.substring(0,1).toUpperCase() +
@@ -283,6 +357,13 @@ public class Database {
         return sentences;
     }
 
+    /**
+    * The method is searching in the database for the dictionary corresponding to the language
+     * * received as a parameter. Look up the word in the dictionary and add all
+     * its definitions to a list. If the word is not found in the dictionary,
+     * a corresponding message is displayed. The method returns the list of definitions sorted
+     * in ascending order by the year the dictionaries appeared
+    */
     public ArrayList<Definition> getDefinitionsForWord(String word, String language)
             throws NullPointerException{
         Dictionar dictionar = getDictionaryHashMap().get(language);
@@ -301,61 +382,10 @@ public class Database {
         return definitions;
     }
 
-    /**
-     *  Constructs a FileWriter given a file name, using the platform's default charset.
-     */
-    public void writeJson(JSONObject obj) {
-        FileWriter file = null;
-        try {
-            file = new FileWriter("tests\\exportJson\\test1.json");
-            file.write(obj.toJSONString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            assert file != null;
-            file.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     /**
-     * Sorts a list of JSONS by name in alphabetical order.
-     */
-    public void sortWords(JSONArray words) {
-        Collections.sort(words, new Comparator() {
-            private static final String KEY_NAME = "word";
-            public int compare (Object o1, Object o2) {
-                JSONObject obj1 = (JSONObject) o1;
-                JSONObject obj2 = (JSONObject) o2;
-                String name1 = (String) obj1.get(KEY_NAME);
-                String name2 = (String) obj2.get(KEY_NAME);
-                return name1.compareTo(name2);
-            }
-        });
-    }
-
-    /**
-     * Sorts a list of JSONS by year in ascending order.
-     */
-    public void sortDefinitions(JSONArray definitions) {
-        Collections.sort(definitions, new Comparator() {
-                    private static final String KEY_YEAR = "year";
-                    public int compare (Object o1, Object o2) {
-                        JSONObject obj1 = (JSONObject) o1;
-                        JSONObject obj2 = (JSONObject) o2;
-                        Integer year1 = (Integer) obj1.get(KEY_YEAR);
-                        Integer year2 = (Integer) obj2.get(KEY_YEAR);
-                        return year1.compareTo(year2);
-                    }
-                });
-    }
-
-    /**
-     * Exports a JSON dictionary,  in which the words are sorted alphabetically and the definitions are
-     * sorted in ascending order by the year of publication of each dictionary.
+     * Exports a JSON dictionary, in which the words are sorted alphabetically and
+     * the definitions are sorted in ascending order by the year of publication of each dictionary.
      */
     @SuppressWarnings("unchecked")
     public void exportDictionary(String language) throws Exception {
@@ -382,19 +412,23 @@ public class Database {
                 texts.addAll (definitionFromDictionary.getText());
                 definition.put("text", texts);
                 definitions.add(definition);
-                sortDefinitions(definitions);
+                Features.sortDefinitions(definitions);
             }
             word.put("definitions", definitions);
             words.add(word);
         }
-        sortWords(words);
+        Features.sortWords(words);
         obj.put("Dictionary", words);
-        writeJson(obj);
+        Features.writeJson(obj);
     }
 
+    /**
+     * The database is updated with the information in the files and all
+     * the dictionaries in it are displayed.
+     */
     public static void main (String[] args) {
         try {
-            Database database = Administration.readAllFiles(new File ("init"));
+            Database database = Administration.readAllFiles(new File("init"));
             Features.printMap(database);
         } catch (Exception e) {
             e.printStackTrace();
