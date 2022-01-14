@@ -1,0 +1,21 @@
+    Dinu Andreea Sabina-322CB
+    HOMEWORK 2 POO- SMART TRANSLATOR
+
+->Database
+All dictionaries are saved in a Database class hashmap, in which the key is represented by
+the dictionary language, and the value is a list of dictionaries. I extracted the language of the
+dictionary from the names of the json files.
+
+->Tests
+I created a test class, in which we initialized the database before each test. For each method, I performed 1-2 tests
+for standard cases and 1 test for special cases.
+In the tests folder I have some json files that helped me read the inputs for some tests. For example, to test the
+method that adds a word to the dictionary, the first 2 files contain new words, which are added without problems,
+and the third test file contains a word that is already in the dictionary, but has new definitions. , so the method
+is updated and returns true.
+
+For the method that adds definitions, the first test must return false, because the word already contains that
+definition, and in the second case, the new definition is successfully added.
+
+For the method of exporting json files, we performed a test in which the json is successfully exported to a file
+and a test in which there is no dictionary for that language.
