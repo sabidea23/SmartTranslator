@@ -1,5 +1,11 @@
+package translation;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import pojo.Definition;
+import pojo.Dictionar;
+import pojo.Word;
+
 import java.io.File;
 import java.io.Reader;
 import java.nio.file.Files;
@@ -19,7 +25,7 @@ public class Administration {
     }
 
     /**
-     * convert JSON array to list of Word object
+     * convert JSON array to list of pojo.Word object
      */
     public static Dictionar getDictionaryFromJson(File file) {
         ArrayList<Word> words = null;
@@ -54,7 +60,7 @@ public class Administration {
     }
 
     /**
-     * Convert JSON string to Word object.
+     * Convert JSON string to pojo.Word object.
      */
     public static Word readWordJson(File file) {
         Word word = null;
@@ -70,7 +76,7 @@ public class Administration {
     }
 
     /**
-     * Convert JSON string to Definition object.
+     * Convert JSON string to pojo.Definition object.
      */
     public static Definition readDefinitionJson(File file) {
         Definition definition = null;

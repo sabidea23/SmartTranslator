@@ -1,5 +1,9 @@
+package translation;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import pojo.Dictionar;
+import pojo.Word;
 
 import java.io.FileWriter;
 import java.io.IOException;

@@ -1,6 +1,12 @@
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+import pojo.Definition;
+import pojo.Dictionar;
+import pojo.Word;
+import translation.Administration;
+import translation.Database;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;

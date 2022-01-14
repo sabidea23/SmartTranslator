@@ -1,8 +1,12 @@
+package translation;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import pojo.Definition;
+import pojo.Dictionar;
+import pojo.Word;
+
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.*;
 
 public class Database {
@@ -27,7 +31,7 @@ public class Database {
 
     @Override
     public String toString () {
-        return "Database{" +
+        return "translation.Database{" +
                 "database=" + dictionaryHashMap +
                 '}';
     }
