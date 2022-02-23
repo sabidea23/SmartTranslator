@@ -1,6 +1,3 @@
-    Dinu Andreea Sabina-322CB
-    HOMEWORK 2 POO- SMART TRANSLATOR
-
 ->Database
 All dictionaries are saved in a Database class hashmap, in which the key is represented by
 the dictionary language, and the value is a list of dictionaries. I extracted the language of the
