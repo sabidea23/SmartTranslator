@@ -330,7 +330,7 @@ public class Database {
     public ArrayList<String> translateSentences(String sentence, String fromLanguage,
                                                 String toLanguage) throws NullPointerException {
         String []arrStr = sentence.split (" ");
-        HashMap<String, ArrayList<String>> synonyms = new HashMap<>();
+        HashMap<String, ArrayList<String>> synonyms = new LinkedHashMap<>();
         ArrayList<String>  sentences = new ArrayList<String>();
 
         for (String str:arrStr) {
